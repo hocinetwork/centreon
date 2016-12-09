@@ -49,7 +49,7 @@ $connexion = curl_exec($curl);
 $json_connexion = json_decode($connexion, true);
 $tokenConnexion = $json_connexion['login']['token']; // you take the token and keep it in a var for your second login
 
-// /!\ don't close the curl conection or initialize a new one or your session id will change !
+// /!\ don't close the curl connection or initialize a new one or your session id will change !
 
 //////////////////////////////////////////////////////////////////////////
 //                           Launch Connexion
@@ -115,7 +115,10 @@ curl_setopt($curl, CURLOPT_POST, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, $postfields);
 curl_setopt($curl, CURLOPT_COOKIEFILE, $path_cookie); //get the previous cookie
 $delete = curl_exec($curl);
+
 $json_delete = json_decode($delete, true);
 $tokenDelete = $json_delete['tokens']['deletetoken'];
 
+// close the curl connection
+curl_close($curl);
 die(json_encode(array('result' => 'delete')));
