@@ -124,7 +124,7 @@
                 -
                 <a href="{$WikiURL}/index.php?title=Service:{$elem}&action=history" target='_blank'>View History</a>
                 -
-                <a href="{$WikiURL}/index.php?title=Service:{$elem}&action=delete" target='_blank'>Delete wiki page</a>
+                <a style="cursor:pointer" onclick="deleteWiki('Service:{$elem}')">Delete wiki page</a>
                 &nbsp;&nbsp;&nbsp;
                 {/if}
             </td>
