@@ -18,6 +18,7 @@ $pearDB = new CentreonDB();
 // get wiki info
 $conf = getWikiConfig($pearDB);
 $apiWikiURL = $conf['kb_wiki_url'] . '/api.php';
+$wikiVersion = getWikiVersion($apiWikiURL);
 $login = $conf['kb_wiki_account'];
 $pass = $conf['kb_wiki_password'];
 $title = $_POST['title'];
@@ -82,11 +83,22 @@ if ($resultLogin != 'Success') {
 //                           Get Delete Token
 //////////////////////////////////////////////////////////////////////////
 
-$postfields = array(
-    'action' => 'tokens',
-    'type' => 'delete',
-    'format' => 'json'
-);
+if ($wikiVersion >= 1.20) {
+    $postfields = array(
+        'action' => 'tokens',
+        'type' => 'delete',
+        'format' => 'json'
+    );
+} else {
+    $postfields = array(
+        'action' => 'query',
+        'prop' => 'info',
+        'intoken' => 'delete',
+        'format' => 'json',
+        'titles' => $title
+    );
+}
+
 
 curl_setopt($curl, CURLOPT_URL, $apiWikiURL);
 curl_setopt($curl, CURLOPT_COOKIESESSION, true);
@@ -96,7 +108,13 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, $postfields);
 curl_setopt($curl, CURLOPT_COOKIEFILE, $path_cookie); //get the previous cookie
 $deleteToken = curl_exec($curl);
 $json_delete = json_decode($deleteToken, true);
-$tokenDelete = $json_delete['tokens']['deletetoken'];
+
+if ($wikiVersion >= 1.20) {
+    $tokenDelete = $json_delete['tokens']['deletetoken'];
+} else {
+    $tokenDelete = $json_delete['query']['pages'][2]['deletetoken'];
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 //                           Delete Page

@@ -75,6 +75,7 @@ function getWikiVersion($apiWikiURL)
         'format' => 'json',
     );
 
+
     $data = http_build_query($post);
 
     $httpOpts = array(
@@ -92,5 +93,9 @@ function getWikiVersion($apiWikiURL)
     $content = @file_get_contents($apiWikiURL, false, $httpContext);
     $content = json_decode($content);
 
-    return $content->query->general->generator;
+    $wikiStringVersion = $content->query->general->generator;
+    $wikiDataVersion = explode(' ', $wikiStringVersion);
+    $wikiVersion = (float)$wikiDataVersion[1];
+
+    return $wikiVersion;
 }
