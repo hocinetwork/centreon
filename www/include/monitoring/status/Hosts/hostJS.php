@@ -251,6 +251,7 @@ function unsetCheckboxes() {
 }
 
 function cmdCallback(cmd) {
+    jQuery('.centreon-popin').remove();
     var keyz;
 
     _cmd = cmd;
